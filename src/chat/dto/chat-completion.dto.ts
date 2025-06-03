@@ -37,4 +37,9 @@ export class ChatCompletionDto {
   @Min(1)
   @Max(4000)
   maxTokens?: number
+
+  @ApiProperty({ required: false, description: 'Session ID to save the conversation' })
+  @IsOptional()
+  @IsString()
+  sessionId?: string
 }

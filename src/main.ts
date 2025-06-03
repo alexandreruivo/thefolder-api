@@ -14,7 +14,7 @@ async function bootstrap() {
   // Security
   app.use(helmet())
   app.enableCors({
-    origin: configService.get("ALLOWED_ORIGINS")?.split(",") || ["http://localhost:3000"],
+    origin: configService.get("ALLOWED_ORIGINS")?.split(",") || ["*"],
     credentials: true,
   })
 
@@ -35,7 +35,7 @@ async function bootstrap() {
   // Swagger documentation
   const config = new DocumentBuilder()
     .setTitle("OpenAI ChatGPT API Wrapper")
-    .setDescription("NestJS wrapper for OpenAI ChatGPT API")
+    .setDescription("NestJS wrapper for OpenAI ChatGPT API with Supabase integration")
     .setVersion("1.0")
     .addApiKey(
       {
@@ -45,16 +45,26 @@ async function bootstrap() {
       },
       "api-key",
     )
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+      "bearer-token",
+    )
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup("api/docs", app, document)
 
-  const port = configService.get("PORT") || 3000
-  await app.listen(port)
+  // Use Railway's PORT environment variable or default to 3000
+  const port = process.env.PORT || configService.get("PORT") || 3000
+  await app.listen(port, "0.0.0.0")
 
-  console.log(`🚀 Application is running on: http://localhost:${port}`)
-  console.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`)
+  console.log(`🚀 Application is running on: http://0.0.0.0:${port}`)
+  console.log(`📚 Swagger documentation: http://0.0.0.0:${port}/api/docs`)
+  console.log(`🏥 Health check: http://0.0.0.0:${port}/api/v1/health`)
 }
 
 bootstrap()

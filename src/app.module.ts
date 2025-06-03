@@ -4,6 +4,8 @@ import { ThrottlerModule } from "@nestjs/throttler"
 import { ChatModule } from "./chat/chat.module"
 import { AuthModule } from "./auth/auth.module"
 import { HealthModule } from "./health/health.module"
+import { SupabaseModule } from "./supabase/supabase.module"
+import { UsersModule } from "./users/users.module"
 import { configuration } from "./config/configuration"
 
 @Module({
@@ -19,9 +21,11 @@ import { configuration } from "./config/configuration"
         limit: 100, // 100 requests per minute
       },
     ]),
+    SupabaseModule,
     AuthModule,
     ChatModule,
     HealthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

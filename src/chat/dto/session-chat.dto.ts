@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsArray, IsOptional, IsString, IsNumber, Min, Max, ValidateNested } from "class-validator"
-import { Type } from "class-transformer"
+import { IsString, IsUUID, IsOptional, IsNumber, Min, Max } from "class-validator"
 
 class MessageDto {
   @ApiProperty({ enum: ["system", "user", "assistant"] })
@@ -12,17 +11,14 @@ class MessageDto {
   content: string
 }
 
-export class ChatStreamDto {
-  @ApiProperty({ type: [MessageDto] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => MessageDto)
-  messages: MessageDto[]
+export class SessionChatDto {
+  @ApiProperty({ description: "Chat session ID" })
+  @IsUUID()
+  sessionId: string
 
-  @ApiProperty({ required: false, default: "gpt-4o" })
-  @IsOptional()
+  @ApiProperty({ description: "User message content" })
   @IsString()
-  model?: string
+  message: string
 
   @ApiProperty({ required: false, minimum: 0, maximum: 2, default: 0.7 })
   @IsOptional()
@@ -37,9 +33,4 @@ export class ChatStreamDto {
   @Min(1)
   @Max(4000)
   maxTokens?: number
-
-  @ApiProperty({ required: false, description: 'Session ID to save the conversation' })
-  @IsOptional()
-  @IsString()
-  sessionId?: string
 }
