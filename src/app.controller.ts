@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
+import { PromptDto } from './dto/prompt.dto';
 
 @Controller()
 export class AppController {
@@ -7,6 +8,11 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return 'thefolder-api is running';
+  }
+
+  @Post('completions')
+  async completions(@Body() promptDto: PromptDto) {
+    return this.appService.completions(promptDto);
   }
 }
